@@ -116,21 +116,41 @@ const EventDetail = () => {
                                 </div>
 
                                 {/* RSVP Action Footer */}
+                                {/* FIX 5 — Vulnerability 5: Misleading UI
+                                    Buttons are now conditionally rendered based on actual permissions.
+                                    - RSVP button: only shown if the user is invited AND has not already RSVPed.
+                                    - Delete button: only shown if the user is the event creator.
+                                    The server enforces these checks independently, but the UI now reflects truth. */}
                                 <div className="pt-10 flex flex-col md:flex-row gap-4 items-center border-t border-slate-100">
-                                    {/* Broken Flow 5: Buttons shown regardless of permissions in starter */}
-                                    <button 
-                                        onClick={handleRSVP} 
-                                        className="btn-primary w-full md:flex-1 py-4 text-lg font-bold shadow-xl shadow-blue-200"
-                                    >
-                                        <CheckCircle size={24} /> RSVP for Event
-                                    </button>
+                                    {event.isInvited && !hasRSVPed && (
+                                        <button 
+                                            onClick={handleRSVP} 
+                                            className="btn-primary w-full md:flex-1 py-4 text-lg font-bold shadow-xl shadow-blue-200"
+                                        >
+                                            <CheckCircle size={24} /> RSVP for Event
+                                        </button>
+                                    )}
+
+                                    {event.isInvited && hasRSVPed && (
+                                        <div className="w-full md:flex-1 py-4 text-center text-green-600 font-bold text-lg flex items-center justify-center gap-2 bg-green-50 rounded-xl border border-green-100">
+                                            <CheckCircle size={24} /> You're going!
+                                        </div>
+                                    )}
+
+                                    {!event.isInvited && !event.isCreator && (
+                                        <div className="w-full md:flex-1 py-4 text-center text-slate-400 font-semibold text-sm flex items-center justify-center gap-2 bg-slate-50 rounded-xl border border-slate-100">
+                                            You are not invited to this event
+                                        </div>
+                                    )}
                                     
-                                    <button 
-                                        onClick={handleDelete} 
-                                        className="btn-danger w-full md:w-auto h-14 md:px-6 shadow-xl shadow-red-200"
-                                    >
-                                        <Trash2 size={24} />
-                                    </button>
+                                    {event.isCreator && (
+                                        <button 
+                                            onClick={handleDelete} 
+                                            className="btn-danger w-full md:w-auto h-14 md:px-6 shadow-xl shadow-red-200"
+                                        >
+                                            <Trash2 size={24} />
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 
@@ -157,7 +177,7 @@ const EventDetail = () => {
                 </div>
                 
                 <p className="mt-8 text-center text-slate-400 text-xs font-bold leading-none tracking-widest">
-                    EVENT_MANAGER_SYSTEM_V.1.0_UNCHECKED_ACCESS_ENABLED (STARTER_NODE)
+                    EVENT_MANAGER_SYSTEM_V.2.0_ACCESS_CONTROL_ENFORCED (SECURED)
                 </p>
             </main>
         </div>

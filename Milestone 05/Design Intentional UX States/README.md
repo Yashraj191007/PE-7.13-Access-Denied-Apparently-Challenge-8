@@ -1,10 +1,21 @@
-# Assignment  — Design Intentional UX States
+# Orderly — Orders Dashboard (UX States Implementation)
 
-## Your Mission
+> 🌐 **Live Demo:** https://orderly-dashboard-ux-statess.vercel.app/
 
-You've joined the frontend team at **Orderly**, a B2B order management platform. The Orders Dashboard fetches data from an API — but right now it just shows a blank screen or raw JSON while doing so.
+A B2B order management dashboard with all four intentional UX states fully implemented.
 
-**Users have no idea what's happening.** Your job is to fix that by implementing four intentional UX states that every async feature must handle.
+---
+
+## ✅ Implemented UX States
+
+| State | Trigger | What's shown |
+|---|---|---|
+| **① Loading** | Data is being fetched | 6 animated shimmer skeleton rows + skeleton stat cards |
+| **② Success** | Orders loaded | Full table with Order ID, Customer, Product, Amount, Status, Date + ★ VIP flag + filter pills |
+| **③ Empty** | No orders / filter has no matches | Context-aware message with CTA (Create Order or Clear Filter) |
+| **④ Error** | API call fails | Specific error type detected (503 / 404 / 401 / network) with actionable guidance + Retry |
+
+---
 
 ## Getting Started
 
@@ -13,58 +24,39 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173` — you'll see the Orders Dashboard.
+Open `http://localhost:5173`
 
-
-## The Four States You Must Implement
-
-Open `src/components/OrdersDashboard.jsx` and find the `TODO` block inside the `<tbody>` tag.
-
-Replace the placeholder with proper conditional rendering for all four states:
-
-### Loading State
-**When:** Data is being fetched  
-**What to show:** Animated skeleton rows — so the user sees the *shape* of the content before it arrives  
-
-### Success State
-**When:** Data loaded and orders exist  
-**What to show:** The full orders table with real data  
-
-### Empty State
-**When:** Data loaded but the array is empty  
-**What to show:** A helpful, friendly message — not a blank table    
-**Make it good:** Add a real icon, a clear heading, an explanatory message, and a CTA button
-
-### Error State
-**When:** The API call failed  
-**What to show:** The error message and a Retry button  
-**Make it good:** Show the real error message, style the error card, ensure Retry works
-
+---
 
 ## Testing Each State
 
 Open `src/mockApi.js` and change the `SIMULATE` constant:
 
 ```js
-export const SIMULATE = 'success'  // ← change this
+export const SIMULATE = 'loading'   // ① skeleton rows — infinite hang
+export const SIMULATE = 'success'   // ② 8 real orders load
+export const SIMULATE = 'empty'     // ③ empty state with CTA
+export const SIMULATE = 'error'     // ④ 503 error with retry
 ```
 
-| Value | What happens |
-|-------|-------------|
-| `'loading'` | API never responds — tests your ① loading state |
-| `'success'` | Returns 8 orders — tests your ② success state |
-| `'empty'`   | Returns 0 orders — tests your ③ empty state |
-| `'error'`   | Throws an error — tests your ④ error state |
+To test the **filtered empty state**: set `'success'`, load the app, then click a status filter pill that matches zero orders.
 
+---
 
-## What to Submit
+## What Was Fixed
 
-1. **Your completed `OrdersDashboard.jsx`** — all 4 states implemented
-2. **GitHub Pull Request** with your changes
-3. **Video walkthrough** 
+The original `<tbody>` rendered a single hardcoded placeholder that dumped raw JSON to a `<pre>` tag regardless of state. See [`Changes.md`](./Changes.md) for the full analysis and implementation details.
 
-## Hint
+---
 
-- The `loading`, `error`, and `orders` variables are already wired up in state — you just need to use them
+## Project Structure
 
-Good luck!
+```
+src/
+├── components/
+│   └── OrdersDashboard.jsx   ← all four UX states implemented here
+├── mockApi.js                ← change SIMULATE to test each state
+├── App.jsx
+└── index.css
+Changes.md                    ← full documentation of changes made
+```
